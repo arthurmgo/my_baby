@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ActivityType {
 
+  ActivityType._();
+
   static const BREAST_FEEDING = "BreastFeeding";
   static const BOTTLE = "Bootle";
   static const DIAPER = "Diapler";
@@ -28,20 +30,35 @@ abstract class Activity {
 
   Map<String, dynamic> encode();
 
+  String typeText(){
+    switch(type){
+      case ActivityType.BREAST_FEEDING: return "Amamentação";
+      case ActivityType.BOTTLE: return "Mamadeira";
+      case ActivityType.DIAPER: return "Fralda";
+      case ActivityType.FOOD: return "Comida";
+      case ActivityType.MEDICINE: return "Medicação";
+      case ActivityType.SLEEPING: return "Soneca";
+      default: return "Outras";
+    }
+  }
+
 
 }
 
 
 class Breast {
+
+  Breast._();
+
   static const LEFT = "left";
   static const RIGHT = "rigth";
 }
 
 class BreastFeeding extends Activity{
 
-  Breast breast;
+  String breast;
 
-  BreastFeeding(DateTime timeStart, DateTime timeEnd, String note, Breast breast) :
+  BreastFeeding(DateTime timeStart, DateTime timeEnd, String note, String breast) :
     super(ActivityType.BREAST_FEEDING, timeStart, timeEnd, note){
       this.breast = breast;
   }

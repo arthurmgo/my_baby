@@ -1,17 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:async';
 
+import 'dart:async';
 
 import 'entry_baby_dialog.dart';
 
 import '../model/baby.dart';
+import '../model/activity.dart';
 
 import '../utils/auth.dart';
 import '../utils/data_base.dart';
 
 import '../widgets/custom_butom.dart';
+import '../widgets/activity_picker.dart';
+
 
 
 
@@ -56,7 +59,6 @@ class HomePageState extends State<HomePage> {
       print(e);
     });
     super.initState();
-
   }
   
   List<Widget> builder(AsyncSnapshot<QuerySnapshot> snapshot){
@@ -66,6 +68,7 @@ class HomePageState extends State<HomePage> {
         return new ListTile(
             title: new Text(baby.name),
             subtitle: new Text(new DateFormat('dd/MM/yyyy').format(baby.birthDate)),
+            trailing: new IconButton(icon: new Icon(Icons.edit), onPressed: (){}),
             leading: new CircleAvatar(
               child: Text(
                 baby.name[0], 
@@ -91,11 +94,36 @@ class HomePageState extends State<HomePage> {
 
 
 
+
+  List<Widget> builderActivity(AsyncSnapshot<QuerySnapshot> snapshot){
+    if(snapshot.hasData){
+      return snapshot.data.documents.map((DocumentSnapshot document) {
+        Activity activity = new BreastFeeding.decode(document);
+        return new ListTile(
+          title: new Text(activity.typeText()),
+          subtitle: new Text(new DateFormat('dd/MM/yyyy - hh:mm').format(activity.timeStart)),
+          leading: new CircleAvatar(
+            child: Text(
+              activity.typeText()[0],
+              style: new TextStyle(
+                  color: Colors.white
+              ),
+            ),
+            backgroundColor: Colors.purple
+          ),
+          onTap: () {
+          },
+        );
+      }).toList();
+    }
+    return [];
+  }
+
   @override
   Widget build(BuildContext context){
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("Welcome"),
+        title: new Text("My Baby"),
       ),
       drawer: new Drawer(
         child: new StreamBuilder<QuerySnapshot>(
@@ -153,7 +181,12 @@ class HomePageState extends State<HomePage> {
                   icon: "assets/icons/036-breast.png",
                   label: "Amamentação",
                   onTap: (){
-                    _breastfeedingDialog();
+                    ActivityPicker ap = new ActivityPicker.add(context, new DateTime.now(), new DateTime.now());
+                    ap.breastfeedingDialog().then((ap){
+                      if (ap != null){
+                        db.addActivity(ap, _babyId);
+                      }
+                    });
                   },
                 ),
                 new CustomButton(
@@ -187,54 +220,23 @@ class HomePageState extends State<HomePage> {
 
           new Expanded(
             child: _babyId != null
-              ? new ListView(
-                  children: <Widget>[
-                    new Text(_babyId)
-                  ],
-                )
+              ? new StreamBuilder<QuerySnapshot>(
+              stream: db.allActivities(_babyId),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData){
+                  return new Text("Não existem atividades cadastradas");
+                } else {
+                return new ListView(
+                  padding: EdgeInsets.zero,
+                  children: builderActivity(snapshot),
+                );
+                }
+              },
+            )
               : new Center(child: new Text("Selecione um Bebê"))
           )
         ]
       ),
-    );
-  }
-
-  Future<Null> _breastfeedingDialog() async {
-    await showDialog<Null>(
-      context: context,
-      builder: (BuildContext context) {
-        return new SimpleDialog(
-          contentPadding: EdgeInsets.zero,
-          title: const Text('Amamentação'),
-          children: <Widget>[
-            new ListTile(
-              leading: new Icon(Icons.speaker_notes),
-              title: new TextField(
-                decoration: new InputDecoration(
-                  hintText: "Digite uma nota"
-                ),
-              ),
-            ),
-            new ListTile(
-              title: new Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  new FlatButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text("CLOSE"),
-                  ),
-                  new FlatButton(
-                    onPressed: (){},
-                    child: new Text(
-                      "SAVE", 
-                      style: new TextStyle(color: Colors.purple)),
-                  )
-                ],
-              ),
-            )
-          ],
-        );
-      }
     );
   }
 

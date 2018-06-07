@@ -35,7 +35,7 @@ class DataBase {
     return Firestore.instance
         .collection('babies')
         .document(babyId)
-        .collection('activities').snapshots();
+        .collection('activities').orderBy('timeStart').snapshots();
   }
 
 
