@@ -54,7 +54,6 @@ class WeightEntryDialogState extends State<BabyEntryDialog> {
                   .pop(new Baby(widget.masterId, _name, _sex, _birthDate));
             }else{
 
-                showSnackBar();
             }
           },
           child: new Text('SAVE',
@@ -67,7 +66,6 @@ class WeightEntryDialogState extends State<BabyEntryDialog> {
       ],
     );
   }
-
 
   @override
   void initState() {
@@ -135,11 +133,6 @@ class WeightEntryDialogState extends State<BabyEntryDialog> {
       ),
     );
   }
-
-  void showSnackBar() {
-    print("Deve Definir Sexo e Nome");
-  }
-
 }
 
 
