@@ -6,9 +6,8 @@ class CustomButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  const CustomButton({
-    Key key, this.icon, this.label, this.onTap, this.heroTag
-  }) : super(key: key);
+  const CustomButton({Key key, this.icon, this.label, this.onTap, this.heroTag})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +20,11 @@ class CustomButton extends StatelessWidget {
             heroTag: heroTag,
             backgroundColor: Colors.blueAccent[100],
             mini: true,
-            child: new Image.asset(icon, width: 32.0, height: 32.0,),
+            child: new Image.asset(
+              icon,
+              width: 32.0,
+              height: 32.0,
+            ),
             onPressed: onTap,
             elevation: 0.0,
           ),
@@ -29,9 +32,10 @@ class CustomButton extends StatelessWidget {
           new Container(
             alignment: Alignment.center,
             width: 35.0,
-            child: new Text(label, style: new TextStyle(
-                fontSize: 10.0
-            ),),
+            child: new Text(
+              label,
+              style: new TextStyle(fontSize: 10.0),
+            ),
           )
         ],
       ),

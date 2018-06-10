@@ -32,8 +32,8 @@ class DateItem extends StatelessWidget {
         lastDate: new DateTime.now());
 
     if (dateTimePicked != null) {
-      onChanged(new DateTime(dateTimePicked.year, dateTimePicked.month,
-          dateTimePicked.day));
+      onChanged(new DateTime(
+          dateTimePicked.year, dateTimePicked.month, dateTimePicked.day));
     }
   }
 }

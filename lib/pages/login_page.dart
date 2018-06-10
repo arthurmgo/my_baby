@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
-
 import '../utils/auth.dart';
 
 class LoginPage extends StatefulWidget {
-
   final VoidCallback onSignedIn;
   final BaseAuth auth;
 
@@ -14,13 +12,9 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => new _LoginPageState();
 }
 
-enum FormType {
-  login,
-  register
-}
+enum FormType { login, register }
 
 class _LoginPageState extends State<LoginPage> {
-
   final formKey = new GlobalKey<FormState>();
 
   String _email;
@@ -34,49 +28,40 @@ class _LoginPageState extends State<LoginPage> {
         title: new Text("Login Page"),
       ),
       body: new Container(
-        padding: EdgeInsets.all(8.0),
-        child: new Form(
-          key: formKey,
-            child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: buildInputs() + buildSubmitButtons(),
-            )
-        )
-      ),
+          padding: EdgeInsets.all(8.0),
+          child: new Form(
+              key: formKey,
+              child: new Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: buildInputs() + buildSubmitButtons(),
+              ))),
     );
   }
 
-
-  List<Widget> buildInputs(){
+  List<Widget> buildInputs() {
     return [
       new TextFormField(
         decoration: new InputDecoration(labelText: "Email"),
-        validator:
-            (value) => value.isEmpty ? "Email can\'t be empty" : null,
-        onSaved:
-            (value) => _email = value,
+        validator: (value) => value.isEmpty ? "Email can\'t be empty" : null,
+        onSaved: (value) => _email = value,
       ),
       new TextFormField(
         decoration: new InputDecoration(labelText: "Password"),
         obscureText: true,
-        validator:
-            (value) => value.isEmpty ? "Email can\'t be empty" : null,
-        onSaved:
-            (value) => _password = value,
+        validator: (value) => value.isEmpty ? "Email can\'t be empty" : null,
+        onSaved: (value) => _password = value,
       ),
     ];
   }
 
-  List<Widget> buildSubmitButtons(){
-    if(_formType == FormType.login) {
+  List<Widget> buildSubmitButtons() {
+    if (_formType == FormType.login) {
       return [
         new Padding(padding: EdgeInsets.only(top: 10.0)),
         new RaisedButton(
           child: new Text(
             "Login",
-            style: new TextStyle(
-                fontSize: 20.0
-            ),
+            style: new TextStyle(fontSize: 20.0),
           ),
           onPressed: validateAndSubmit,
         ),
@@ -84,11 +69,8 @@ class _LoginPageState extends State<LoginPage> {
             onPressed: moveToRegister,
             child: new Text(
               "Create an account",
-              style: new TextStyle(
-                  fontSize: 20.0
-              ),
-            )
-        )
+              style: new TextStyle(fontSize: 20.0),
+            ))
       ];
     } else {
       return [
@@ -96,9 +78,7 @@ class _LoginPageState extends State<LoginPage> {
         new RaisedButton(
           child: new Text(
             "Create an account",
-            style: new TextStyle(
-                fontSize: 20.0
-            ),
+            style: new TextStyle(fontSize: 20.0),
           ),
           onPressed: validateAndSubmit,
         ),
@@ -106,43 +86,39 @@ class _LoginPageState extends State<LoginPage> {
             onPressed: moveToLogin,
             child: new Text(
               "Have an account? Login",
-              style: new TextStyle(
-                  fontSize: 20.0
-              ),
-            )
-        )
+              style: new TextStyle(fontSize: 20.0),
+            ))
       ];
     }
   }
 
   bool validateAndSave() {
-
     final form = formKey.currentState;
-    if(form.validate()){
+    if (form.validate()) {
       form.save();
       return true;
     }
     return false;
   }
 
-  void validateAndSubmit() async{
-
-    if(validateAndSave()){
+  void validateAndSubmit() async {
+    if (validateAndSave()) {
       try {
-        if(_formType == FormType.login){
-          String userId = await widget.auth.signInWithEmailAndPassword(_email, _password);
+        if (_formType == FormType.login) {
+          String userId =
+              await widget.auth.signInWithEmailAndPassword(_email, _password);
           print("Signed in: $userId");
-        }else {
-          String userId = await widget.auth.createUserWithEmailAndPassword(_email, _password);
+        } else {
+          String userId = await widget.auth
+              .createUserWithEmailAndPassword(_email, _password);
           print("Registred user: $userId");
         }
         widget.onSignedIn();
-      }catch(e){
+      } catch (e) {
         print("Error: $e");
       }
     }
   }
-
 
   void moveToRegister() {
     formKey.currentState.reset();

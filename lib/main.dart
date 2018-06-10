@@ -13,7 +13,10 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       title: 'My Baby Arthur',
       theme: new ThemeData(
-        primarySwatch: Colors.purple,
+        primaryColor: const Color(0xffb3e5fc),
+        primaryColorLight: const Color(0xffe6ffff),
+        primaryColorDark: const Color(0xff82b3c9),
+        accentColor: const Color(0xfff8bbd0),
       ),
       home: new RootPage(auth: new Auth(),),
     );

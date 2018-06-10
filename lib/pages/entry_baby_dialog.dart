@@ -1,38 +1,30 @@
-
 import 'package:flutter/material.dart';
 
-import '../widgets/date_time.dart';
 import '../model/baby.dart';
+import '../widgets/date_time.dart';
 
 class BabyEntryDialog extends StatefulWidget {
-
   final String masterId;
   final Baby babyEntryToEdit;
 
-  BabyEntryDialog.add(this.masterId) :
-        babyEntryToEdit = null;
+  BabyEntryDialog.add(this.masterId) : babyEntryToEdit = null;
 
-
-  BabyEntryDialog.edit(this.babyEntryToEdit) :
-        masterId = babyEntryToEdit.masterId;
+  BabyEntryDialog.edit(this.babyEntryToEdit)
+      : masterId = babyEntryToEdit.masterId;
 
   @override
   WeightEntryDialogState createState() {
     if (babyEntryToEdit != null) {
-      return new WeightEntryDialogState(babyEntryToEdit.birthDate,
-          babyEntryToEdit.sex, babyEntryToEdit.name);
-    } else {
       return new WeightEntryDialogState(
-          new DateTime.now(), null, null);
+          babyEntryToEdit.birthDate, babyEntryToEdit.sex, babyEntryToEdit.name);
+    } else {
+      return new WeightEntryDialogState(new DateTime.now(), null, null);
     }
   }
 }
 
 class WeightEntryDialogState extends State<BabyEntryDialog> {
-
-  final formKey = new GlobalKey<FormState>();
-
-  DateTime _birthDate = new DateTime.now();
+  DateTime _birthDate;
   String _sex;
   String _name;
 
@@ -48,13 +40,11 @@ class WeightEntryDialogState extends State<BabyEntryDialog> {
       actions: [
         new FlatButton(
           onPressed: () {
-            if(_sex != null && _name != null){
+            if (_sex != null && _name != null && _name != "") {
               Navigator
                   .of(context)
                   .pop(new Baby(widget.masterId, _name, _sex, _birthDate));
-            }else{
-
-            }
+            } else {}
           },
           child: new Text('SAVE',
               style: Theme
@@ -79,10 +69,14 @@ class WeightEntryDialogState extends State<BabyEntryDialog> {
       appBar: _createAppBar(context),
       body: new ListView(
         children: [
-           new ListTile(
-            leading: new Image.asset("assets/icons/001-baby-6.png", width: 32.0, height: 32.0,),
+          new ListTile(
+            leading: new Image.asset(
+              "assets/icons/001-baby-6.png",
+              width: 32.0,
+              height: 32.0,
+            ),
             title: new TextField(
-              decoration: new InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Nome',
               ),
               controller: _textController,
@@ -94,7 +88,11 @@ class WeightEntryDialogState extends State<BabyEntryDialog> {
             padding: const EdgeInsets.only(left: 16.0),
             child: new Row(
               children: <Widget>[
-                new Image.asset("assets/icons/044-gender.png", width: 32.0, height: 32.0, ),
+                new Image.asset(
+                  "assets/icons/044-gender.png",
+                  width: 32.0,
+                  height: 32.0,
+                ),
                 new Column(
                   children: <Widget>[
                     new Row(
@@ -102,7 +100,11 @@ class WeightEntryDialogState extends State<BabyEntryDialog> {
                         new Radio<String>(
                           value: Sex.FEMALE,
                           groupValue: _sex,
-                          onChanged: (String value) { setState(() { _sex = value; }); },
+                          onChanged: (String value) {
+                            setState(() {
+                              _sex = value;
+                            });
+                          },
                         ),
                         const Text("Menina")
                       ],
@@ -112,7 +114,11 @@ class WeightEntryDialogState extends State<BabyEntryDialog> {
                         new Radio<String>(
                           value: Sex.MALE,
                           groupValue: _sex,
-                          onChanged: (String value) { setState(() { _sex = value; }); },
+                          onChanged: (String value) {
+                            setState(() {
+                              _sex = value;
+                            });
+                          },
                         ),
                         const Text("Menino")
                       ],
@@ -123,7 +129,11 @@ class WeightEntryDialogState extends State<BabyEntryDialog> {
             ),
           ),
           new ListTile(
-            leading: new Image.asset("assets/icons/026-calendar.png", width: 32.0, height: 32.0,),
+            leading: new Image.asset(
+              "assets/icons/026-calendar.png",
+              width: 32.0,
+              height: 32.0,
+            ),
             title: new DateItem(
               dateTime: _birthDate,
               onChanged: (dateTime) => setState(() => _birthDate = dateTime),
@@ -134,5 +144,3 @@ class WeightEntryDialogState extends State<BabyEntryDialog> {
     );
   }
 }
-
-
