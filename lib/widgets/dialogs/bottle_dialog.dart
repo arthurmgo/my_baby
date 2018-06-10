@@ -9,7 +9,7 @@ class BottleDialog extends StatefulWidget {
 
   final DateTime _timeStart = new DateTime.now();
   final DateTime _timeEnd = new DateTime.now();
-  final Food bottle;
+  final Bottle bottle;
 
   BottleDialog.add() : bottle = null;
 

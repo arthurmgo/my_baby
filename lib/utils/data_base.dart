@@ -63,14 +63,25 @@ class DataBase {
         .snapshots();
   }
 
-  Stream<QuerySnapshot> allActivities(String babyId, DateTime date) {
-    return Firestore.instance
-        .collection('babies')
-        .document(babyId)
-        .collection('activities')
-        .where('timeStart',
-            isLessThan: date.add(new Duration(days: 1)),
-            isGreaterThanOrEqualTo: date)
-        .snapshots();
+  Stream<QuerySnapshot> allActivities(String babyId, DateTime date, String type) {
+    if (type != null){
+      return Firestore.instance
+          .collection('babies')
+          .document(babyId)
+          .collection('activities')
+          .where('timeStart',
+          isLessThan: date.add(new Duration(days: 1)),
+          isGreaterThanOrEqualTo: date).where('type', isEqualTo: type)
+          .snapshots();
+    }else{
+      return Firestore.instance
+          .collection('babies')
+          .document(babyId)
+          .collection('activities')
+          .where('timeStart',
+          isLessThan: date.add(new Duration(days: 1)),
+          isGreaterThanOrEqualTo: date)
+          .snapshots();
+    }
   }
 }
