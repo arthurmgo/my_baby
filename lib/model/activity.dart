@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class ActivityType {
   ActivityType._();
@@ -47,7 +47,7 @@ abstract class Activity {
     }
   }
 
-  Color getTypeColor(){
+  Color getTypeColor() {
     switch (type) {
       case ActivityType.BREAST_FEEDING:
         return new Color(0xffc5cae9);
@@ -99,14 +99,12 @@ class BreastFeeding extends Activity {
   }
 }
 
-class Bottle extends Activity{
-
-
-  Bottle(DateTime timeStart, DateTime timeEnd, String note) : super(ActivityType.BOTTLE, timeStart, timeEnd, note);
+class Bottle extends Activity {
+  Bottle(DateTime timeStart, DateTime timeEnd, String note)
+      : super(ActivityType.BOTTLE, timeStart, timeEnd, note);
 
   Bottle.decode(DocumentSnapshot document) : super.decode(document);
 
-
   @override
   Map<String, dynamic> encode() {
     return {
@@ -116,17 +114,14 @@ class Bottle extends Activity{
       "note": this.note,
     };
   }
-
 }
 
-class Diaper extends Activity{
+class Diaper extends Activity {
+  Diaper(DateTime timeStart, DateTime timeEnd, String note)
+      : super(ActivityType.DIAPER, timeStart, timeEnd, note);
 
-
-  Diaper(DateTime timeStart, DateTime timeEnd, String note) : super(ActivityType.DIAPER, timeStart, timeEnd, note);
   Diaper.decode(DocumentSnapshot document) : super.decode(document);
 
-
-
   @override
   Map<String, dynamic> encode() {
     return {
@@ -136,17 +131,14 @@ class Diaper extends Activity{
       "note": this.note,
     };
   }
-
 }
 
+class Sleeping extends Activity {
+  Sleeping(DateTime timeStart, DateTime timeEnd, String note)
+      : super(ActivityType.SLEEPING, timeStart, timeEnd, note);
 
-class Sleeping extends Activity{
-
-
-  Sleeping(DateTime timeStart, DateTime timeEnd, String note) : super(ActivityType.SLEEPING, timeStart, timeEnd, note);
   Sleeping.decode(DocumentSnapshot document) : super.decode(document);
 
-
   @override
   Map<String, dynamic> encode() {
     return {
@@ -156,18 +148,14 @@ class Sleeping extends Activity{
       "note": this.note,
     };
   }
-
 }
 
+class Food extends Activity {
+  Food(DateTime timeStart, DateTime timeEnd, String note)
+      : super(ActivityType.FOOD, timeStart, timeEnd, note);
 
-
-class Food extends Activity{
-
-
-  Food(DateTime timeStart, DateTime timeEnd, String note) : super(ActivityType.FOOD, timeStart, timeEnd, note);
   Food.decode(DocumentSnapshot document) : super.decode(document);
 
-
   @override
   Map<String, dynamic> encode() {
     return {
@@ -177,13 +165,12 @@ class Food extends Activity{
       "note": this.note,
     };
   }
-
 }
 
+class Medicine extends Activity {
+  Medicine(DateTime timeStart, DateTime timeEnd, String note)
+      : super(ActivityType.MEDICINE, timeStart, timeEnd, note);
 
-class Medicine extends Activity{
-
-  Medicine(DateTime timeStart, DateTime timeEnd, String note) : super(ActivityType.MEDICINE, timeStart, timeEnd, note);
   Medicine.decode(DocumentSnapshot document) : super.decode(document);
 
   @override
@@ -195,7 +182,4 @@ class Medicine extends Activity{
       "note": this.note,
     };
   }
-
 }
-
-

@@ -1,12 +1,11 @@
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../../model/activity.dart';
 
 class BreastFeedingDialog extends StatefulWidget {
-
   final DateTime _timeStart = new DateTime.now();
   final DateTime _timeEnd = new DateTime.now();
   final BreastFeeding breastFeeding;
@@ -17,10 +16,12 @@ class BreastFeedingDialog extends StatefulWidget {
 
   @override
   _BreastFeedingDialogState createState() {
-    if(breastFeeding != null){
-      return new _BreastFeedingDialogState(breastFeeding.timeStart, breastFeeding.timeEnd, breastFeeding.note);
+    if (breastFeeding != null) {
+      return new _BreastFeedingDialogState(
+          breastFeeding.timeStart, breastFeeding.timeEnd, breastFeeding.note);
     } else {
-      return new _BreastFeedingDialogState(this._timeStart, this._timeEnd, null);
+      return new _BreastFeedingDialogState(
+          this._timeStart, this._timeEnd, null);
     }
   }
 }
@@ -32,7 +33,6 @@ class _BreastFeedingDialogState extends State<BreastFeedingDialog> {
 
   TextEditingController _textController;
 
-
   _BreastFeedingDialogState(this._timeStart, this._timeEnd, this._note);
 
   @override
@@ -40,9 +40,7 @@ class _BreastFeedingDialogState extends State<BreastFeedingDialog> {
     // TODO: implement initState
     super.initState();
     _textController = new TextEditingController(text: _note);
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +92,7 @@ class _BreastFeedingDialogState extends State<BreastFeedingDialog> {
                       _timeStart, _timeEnd, _note, Breast.LEFT));
                 },
                 child:
-                new Text("OK", style: new TextStyle(color: Colors.purple)),
+                    new Text("OK", style: new TextStyle(color: Colors.purple)),
               )
             ],
           ),
@@ -156,7 +154,7 @@ class DateTimeItem extends StatelessWidget {
 
   Future _showTimePicker(BuildContext context) async {
     TimeOfDay timeOfDay =
-    await showTimePicker(context: context, initialTime: time);
+        await showTimePicker(context: context, initialTime: time);
 
     if (timeOfDay != null) {
       onChanged(new DateTime(

@@ -1,12 +1,11 @@
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../../model/activity.dart';
 
 class FoodDialog extends StatefulWidget {
-
   final DateTime _timeStart = new DateTime.now();
   final DateTime _timeEnd = new DateTime.now();
   final Food food;
@@ -17,7 +16,7 @@ class FoodDialog extends StatefulWidget {
 
   @override
   _FoodDialogState createState() {
-    if(food != null){
+    if (food != null) {
       return new _FoodDialogState(food.timeStart, food.timeEnd, food.note);
     } else {
       return new _FoodDialogState(this._timeStart, this._timeEnd, null);
@@ -32,7 +31,6 @@ class _FoodDialogState extends State<FoodDialog> {
 
   TextEditingController _textController;
 
-
   _FoodDialogState(this._timeStart, this._timeEnd, this._note);
 
   @override
@@ -40,9 +38,7 @@ class _FoodDialogState extends State<FoodDialog> {
     // TODO: implement initState
     super.initState();
     _textController = new TextEditingController(text: _note);
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -90,11 +86,12 @@ class _FoodDialogState extends State<FoodDialog> {
               ),
               new FlatButton(
                 onPressed: () {
-                  Navigator.of(context).pop(new Food(
-                      _timeStart, _timeEnd, _note));
+                  Navigator
+                      .of(context)
+                      .pop(new Food(_timeStart, _timeEnd, _note));
                 },
-                child:
-                new Text("OK", style: new TextStyle(color: Theme.of(context).accentColor)),
+                child: new Text("OK",
+                    style: new TextStyle(color: Theme.of(context).accentColor)),
               )
             ],
           ),
@@ -156,7 +153,7 @@ class DateTimeItem extends StatelessWidget {
 
   Future _showTimePicker(BuildContext context) async {
     TimeOfDay timeOfDay =
-    await showTimePicker(context: context, initialTime: time);
+        await showTimePicker(context: context, initialTime: time);
 
     if (timeOfDay != null) {
       onChanged(new DateTime(

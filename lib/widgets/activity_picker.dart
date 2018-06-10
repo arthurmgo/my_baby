@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../model/activity.dart';
+import 'dialogs/bottle_dialog.dart';
 import 'dialogs/breast_feeding_dialg.dart';
 import 'dialogs/diaper_dialog.dart';
-import 'dialogs/bottle_dialog.dart';
 import 'dialogs/food_dialog.dart';
-import 'dialogs/sleeping_dialog.dart';
 import 'dialogs/medicine_dialog.dart';
+import 'dialogs/sleeping_dialog.dart';
 
 class ActivityPicker {
   final BuildContext _context;
@@ -37,7 +37,6 @@ class ActivityPicker {
                 return new BottleDialog.edit(activityEntryToEdit);
               case ActivityType.MEDICINE:
                 return new MedicineDialog.edit(activityEntryToEdit);
-
             }
           } else {
             switch (type) {

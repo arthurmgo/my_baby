@@ -9,6 +9,7 @@ import '../model/baby.dart';
 import '../utils/auth.dart';
 import '../utils/data_base.dart';
 import '../widgets/activity_picker.dart';
+import '../widgets/activity_view.dart';
 import '../widgets/custom_butom.dart';
 import 'entry_baby_dialog.dart';
 
@@ -29,8 +30,6 @@ class HomePageState extends State<HomePage> {
   String _babyId;
   Baby _currentBaby;
   DateTime _birthDate;
-  int _startPage;
-
   DataBase db = new DataBase();
 
   String _type;
@@ -47,7 +46,6 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     // TODO: implement initState
-    DateTime now = new DateTime.now();
     widget.auth.currentUser().then((value) {
       setState(() {
         _uid = value;
@@ -59,9 +57,6 @@ class HomePageState extends State<HomePage> {
       setState(() {
         _birthDate = new DateTime(_currentBaby.birthDate.year,
             _currentBaby.birthDate.month, _currentBaby.birthDate.day);
-        _startPage = new DateTime(now.year, now.month, now.day)
-            .difference(_birthDate)
-            .inDays;
       });
     }
     super.initState();
@@ -81,7 +76,7 @@ class HomePageState extends State<HomePage> {
         return new ListTile(
           title: new Text(baby.name),
           subtitle:
-          new Text(new DateFormat('dd/MM/yyyy').format(baby.birthDate)),
+              new Text(new DateFormat('dd/MM/yyyy').format(baby.birthDate)),
           trailing: new IconButton(
               icon: new Icon(Icons.edit),
               onPressed: () {
@@ -98,89 +93,12 @@ class HomePageState extends State<HomePage> {
           ),
           onTap: () {
             setState(() {
-              DateTime now = new DateTime.now();
               _babyId = document.documentID;
               _currentBaby = baby;
               _birthDate = new DateTime(_currentBaby.birthDate.year,
                   _currentBaby.birthDate.month, _currentBaby.birthDate.day);
-              _startPage = new DateTime(now.year, now.month, now.day)
-                  .difference(_birthDate)
-                  .inDays;
             });
             Navigator.of(context).pop();
-          },
-        );
-      }).toList();
-    }
-    return [];
-  }
-
-  List<Widget> builderActivity(AsyncSnapshot<QuerySnapshot> snapshot) {
-    if (snapshot.hasData) {
-      return snapshot.data.documents.map((DocumentSnapshot document) {
-        Activity activity;
-        switch (document['type']) {
-          case ActivityType.BREAST_FEEDING:
-            activity = new BreastFeeding.decode(document);
-            break;
-          case ActivityType.DIAPER:
-            activity = new Diaper.decode(document);
-            break;
-          case ActivityType.MEDICINE:
-            activity = new Medicine.decode(document);
-            break;
-          case ActivityType.SLEEPING:
-            activity = new Sleeping.decode(document);
-            break;
-          case ActivityType.BOTTLE:
-            activity = new Bottle.decode(document);
-            break;
-          case ActivityType.FOOD:
-            activity = new Food.decode(document);
-            break;
-        }
-        return new ListTile(
-          title: new Text(activity.typeText()),
-          subtitle: new Text(
-              new DateFormat('dd/MM/yyyy - hh:mm').format(activity.timeStart)),
-          leading: new CircleAvatar(
-              child: Text(
-                activity.typeText()[0],
-                style: new TextStyle(color: Colors.white),
-              ),
-              backgroundColor: activity.getTypeColor()),
-          onTap: () {
-            print(activity.type);
-            print(activity);
-            new ActivityPicker.edit(context, activity.type, activity)
-                .showActivityDialog()
-                .then((ap) {
-              if (ap != null) {
-                db.editActivity(ap, _babyId, document.documentID);
-              }
-            });
-          },
-          onLongPress: () {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return new AlertDialog(
-                    title: new Text("Deletar"),
-                    content:
-                    new Text("Deseja deletar a atividade selecionada?"),
-                    actions: <Widget>[
-                      new FlatButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: new Text("CANCELAR")),
-                      new FlatButton(
-                          onPressed: () {
-                            _deleteActivity(document.documentID);
-                            Navigator.of(context).pop();
-                          },
-                          child: new Text("CONFIRMAR"))
-                    ],
-                  );
-                });
           },
         );
       }).toList();
@@ -206,7 +124,7 @@ class HomePageState extends State<HomePage> {
                         return new AlertDialog(
                           title: new Text("Deletar"),
                           content:
-                          new Text("Deseja deletar o bebê selecionado?"),
+                              new Text("Deseja deletar o bebê selecionado?"),
                           actions: <Widget>[
                             new FlatButton(
                                 onPressed: () => Navigator.of(context).pop(),
@@ -232,11 +150,11 @@ class HomePageState extends State<HomePage> {
             return new ListView(
                 padding: EdgeInsets.zero,
                 children: <Widget>[
-                  new UserAccountsDrawerHeader(
-                    accountName: new Text("User"),
-                    accountEmail: new Text("user@userdomain.com"),
-                  )
-                ] +
+                      new UserAccountsDrawerHeader(
+                        accountName: new Text("User"),
+                        accountEmail: new Text("user@userdomain.com"),
+                      )
+                    ] +
                     builder(snapshot) +
                     [
                       new ListTile(
@@ -325,7 +243,7 @@ class HomePageState extends State<HomePage> {
                       label: "Comida",
                       onTap: () {
                         ActivityPicker ap =
-                        new ActivityPicker.add(context, ActivityType.FOOD);
+                            new ActivityPicker.add(context, ActivityType.FOOD);
                         ap.showActivityDialog().then((ap) {
                           if (ap != null) {
                             db.addActivity(ap, _babyId);
@@ -350,79 +268,22 @@ class HomePageState extends State<HomePage> {
             ),
             new Expanded(
                 child: _babyId != null
-                    ? new PageView.builder(
-                    controller: new PageController(
-                      initialPage: _startPage,
-                    ),
-                    reverse: false,
-                    itemBuilder: (BuildContext context, int index) {
-                      DateTime now = new DateTime.now();
-                      DateTime displayDate =
-                      _birthDate.add(new Duration(days: index));
-                      return new StreamBuilder<QuerySnapshot>(
-                        stream:
-                        db.allActivities(_babyId, displayDate, _type),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (!snapshot.hasData) {
-                            return new Center(
-                              child: new CircularProgressIndicator(),
-                            );
-                          } else {
-                            return new Column(
-                              children: <Widget>[
-                                new OptionsMenu(
-                                  displayDate: displayDate,
-                                  onSetType: onSetType,
-                                  onTapDate: () async {
-                                    DateTime dateTimePicked =
-                                    await showDatePicker(
-                                        context: context,
-                                        initialDate: new DateTime(
-                                            now.year,
-                                            now.month,
-                                            now.day),
-                                        firstDate: _currentBaby
-                                            .birthDate
-                                            .subtract(
-                                            new Duration(days: 1)),
-                                        lastDate: new DateTime.now());
-
-                                    if (dateTimePicked != null) {
-                                      setState(() {
-                                        _startPage = dateTimePicked
-                                            .difference(_birthDate)
-                                            .inDays;
-                                      });
-                                    }
-                                  },
-                                ),
-                                new Expanded(
-                                  child: new ListView(
-                                    padding: EdgeInsets.zero,
-                                    children: builderActivity(snapshot),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }
-                        },
-                      );
-                    })
+                    ? new ActivityView(
+                        key: new Key(_babyId),
+                        babyId: _babyId,
+                        birthDate: _birthDate,
+                        db: db)
                     : new Center(child: new Text("Selecione um Bebê")))
           ]),
     );
   }
 
-  void onSetType() async {
-    String type = await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return new TypePickerWidget(type: _type);
-        });
-
+  _deleteBaby() {
+    db.deleteBaby(_babyId);
     setState(() {
-      _type = type;
+      _birthDate = null;
+      _currentBaby = null;
+      _babyId = null;
     });
   }
 
@@ -441,25 +302,21 @@ class HomePageState extends State<HomePage> {
     Navigator
         .of(context)
         .push(
-      new MaterialPageRoute<Baby>(
-        builder: (BuildContext context) {
-          return new BabyEntryDialog.edit(baby);
-        },
-        fullscreenDialog: true,
-      ),
-    )
+          new MaterialPageRoute<Baby>(
+            builder: (BuildContext context) {
+              return new BabyEntryDialog.edit(baby);
+            },
+            fullscreenDialog: true,
+          ),
+        )
         .then((newSave) {
       if (newSave != null) {
         db.editBaby(newSave, babyId);
         setState(() {
-          DateTime now = new DateTime.now();
           _babyId = babyId;
           _currentBaby = newSave;
           _birthDate = new DateTime(_currentBaby.birthDate.year,
               _currentBaby.birthDate.month, _currentBaby.birthDate.day);
-          _startPage = new DateTime(now.year, now.month, now.day)
-              .difference(_birthDate)
-              .inDays;
         });
       }
     });
@@ -468,188 +325,11 @@ class HomePageState extends State<HomePage> {
   void _addBaby(Baby save) {
     db.addBaby(save).then((id) {
       setState(() {
-        DateTime now = new DateTime.now();
         _babyId = id;
         _currentBaby = save;
         _birthDate = new DateTime(_currentBaby.birthDate.year,
             _currentBaby.birthDate.month, _currentBaby.birthDate.day);
-        _startPage = new DateTime(now.year, now.month, now.day)
-            .difference(_birthDate)
-            .inDays;
       });
     });
-  }
-
-  _deleteBaby() {
-    db.deleteBaby(_babyId).whenComplete(() {
-      setState(() {
-        _startPage = null;
-        _birthDate = null;
-        _currentBaby = null;
-        _babyId = null;
-      });
-    });
-  }
-
-  _deleteActivity(String activityId) {
-    db.deleteActivity(_babyId, activityId).whenComplete(() {
-      print("Sucess!");
-    });
-  }
-}
-
-class OptionsMenu extends StatefulWidget {
-  const OptionsMenu(
-      {Key key, @required this.displayDate, this.onTapDate, this.onSetType})
-      : super(key: key);
-
-  final DateTime displayDate;
-  final VoidCallback onTapDate;
-  final VoidCallback onSetType;
-
-  @override
-  OptionsMenuState createState() {
-    return new OptionsMenuState(
-        this.displayDate, this.onTapDate, this.onSetType);
-  }
-}
-
-class OptionsMenuState extends State<OptionsMenu> {
-  String _type;
-  DateTime displayDate;
-  VoidCallback onTapDate;
-  VoidCallback onSetType;
-
-  OptionsMenuState(this.displayDate, this.onTapDate, this.onSetType);
-
-  @override
-  Widget build(BuildContext context) {
-    return new Container(
-        height: 50.0,
-        padding: new EdgeInsets.symmetric(horizontal: 16.0),
-        color: const Color(0xFFEEEEEE),
-        alignment: Alignment.centerLeft,
-        child: new Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            new InkWell(
-                child: new Row(
-                  children: <Widget>[
-                    new Text(
-                      displayDate.day.toString(),
-                      style: new TextStyle(
-                          fontSize: 34.0, fontWeight: FontWeight.bold),
-                    ),
-                    new Padding(
-                      padding: new EdgeInsets.only(left: 8.0),
-                    ),
-                    new Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        new Text(new DateFormat("E, MMM").format(displayDate)),
-                        new Text("¯\\_(ツ)_/¯")
-                      ],
-                    )
-                  ],
-                ),
-                onTap: onTapDate),
-            new IconButton(
-                icon: new Icon(Icons.filter_list), onPressed: onSetType)
-          ],
-        ));
-  }
-}
-
-class TypePickerWidget extends StatefulWidget {
-  final String type;
-
-  const TypePickerWidget({Key key, this.type}) : super(key: key);
-
-  @override
-  TypePickerWidgetState createState() {
-    return new TypePickerWidgetState(type);
-  }
-}
-
-class TypePickerWidgetState extends State<TypePickerWidget> {
-  String type;
-
-  TypePickerWidgetState(this.type);
-
-  @override
-  Widget build(BuildContext context) {
-    return new SimpleDialog(
-      contentPadding: EdgeInsets.zero,
-      title: new Text("Escolha as atividades"),
-      children: <Widget>[
-        new RadioListTile(
-          groupValue: type,
-          value: ActivityType.BREAST_FEEDING,
-          onChanged: (value) => setState(() {
-            type = value;
-          }),
-          title: new Text("Amamentação"),
-        ),
-        new RadioListTile(
-          groupValue: type,
-          value: ActivityType.BOTTLE,
-          onChanged: (value) => setState(() {
-            type = value;
-          }),
-          title: new Text("Mamadeira"),
-        ),
-        new RadioListTile(
-          groupValue: type,
-          value: ActivityType.DIAPER,
-          onChanged: (value) => setState(() {
-            type = value;
-          }),
-          title: new Text("Fralda"),
-        ),
-        new RadioListTile(
-          groupValue: type,
-          value: ActivityType.SLEEPING,
-          onChanged: (value) => setState(() {
-            type = value;
-          }),
-          title: new Text("Soneca"),
-        ),
-        new RadioListTile(
-          groupValue: type,
-          value: ActivityType.FOOD,
-          onChanged: (value) => setState(() {
-            type = value;
-          }),
-          title: new Text("Comida"),
-        ),
-        new RadioListTile(
-          groupValue: type,
-          value: ActivityType.MEDICINE,
-          onChanged: (value) => setState(() {
-            type = value;
-          }),
-          title: new Text("Medicina"),
-        ),
-        new RadioListTile(
-          groupValue: type,
-          value: null,
-          onChanged: (value) => setState(() {
-            type = value;
-          }),
-          title: new Text("Todos"),
-        ),
-        new Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            new FlatButton(
-                onPressed: () {
-                  print(type);
-                  Navigator.of(context).pop(type);
-                },
-                child: new Text("OK"))
-          ],
-        )
-      ],
-    );
   }
 }

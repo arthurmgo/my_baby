@@ -1,12 +1,11 @@
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../../model/activity.dart';
 
 class DiaperDialog extends StatefulWidget {
-
   final DateTime _timeStart = new DateTime.now();
   final DateTime _timeEnd = new DateTime.now();
   final Diaper diaper;
@@ -17,8 +16,9 @@ class DiaperDialog extends StatefulWidget {
 
   @override
   _DiaperDialogState createState() {
-    if(diaper != null){
-      return new _DiaperDialogState(diaper.timeStart, diaper.timeEnd, diaper.note);
+    if (diaper != null) {
+      return new _DiaperDialogState(
+          diaper.timeStart, diaper.timeEnd, diaper.note);
     } else {
       return new _DiaperDialogState(this._timeStart, this._timeEnd, null);
     }
@@ -32,7 +32,6 @@ class _DiaperDialogState extends State<DiaperDialog> {
 
   TextEditingController _textController;
 
-
   _DiaperDialogState(this._timeStart, this._timeEnd, this._note);
 
   @override
@@ -40,9 +39,7 @@ class _DiaperDialogState extends State<DiaperDialog> {
     // TODO: implement initState
     super.initState();
     _textController = new TextEditingController(text: _note);
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -90,11 +87,12 @@ class _DiaperDialogState extends State<DiaperDialog> {
               ),
               new FlatButton(
                 onPressed: () {
-                  Navigator.of(context).pop(new Diaper(
-                      _timeStart, _timeEnd, _note));
+                  Navigator
+                      .of(context)
+                      .pop(new Diaper(_timeStart, _timeEnd, _note));
                 },
-                child:
-                new Text("OK", style: new TextStyle(color: Theme.of(context).accentColor)),
+                child: new Text("OK",
+                    style: new TextStyle(color: Theme.of(context).accentColor)),
               )
             ],
           ),
@@ -156,7 +154,7 @@ class DateTimeItem extends StatelessWidget {
 
   Future _showTimePicker(BuildContext context) async {
     TimeOfDay timeOfDay =
-    await showTimePicker(context: context, initialTime: time);
+        await showTimePicker(context: context, initialTime: time);
 
     if (timeOfDay != null) {
       onChanged(new DateTime(

@@ -22,9 +22,7 @@ class DataBase {
   }
 
   Future<Null> deleteBaby(String babyId) async {
-    await Firestore.instance
-        .collection("babies")
-        .document(babyId).delete();
+    await Firestore.instance.collection("babies").document(babyId).delete();
   }
 
   Future<Null> deleteActivity(String babyId, String activityId) async {
@@ -63,24 +61,26 @@ class DataBase {
         .snapshots();
   }
 
-  Stream<QuerySnapshot> allActivities(String babyId, DateTime date, String type) {
-    if (type != null){
+  Stream<QuerySnapshot> allActivities(
+      String babyId, DateTime date, String type) {
+    if (type != null) {
       return Firestore.instance
           .collection('babies')
           .document(babyId)
           .collection('activities')
           .where('timeStart',
-          isLessThan: date.add(new Duration(days: 1)),
-          isGreaterThanOrEqualTo: date).where('type', isEqualTo: type)
+              isLessThan: date.add(new Duration(days: 1)),
+              isGreaterThanOrEqualTo: date)
+          .where('type', isEqualTo: type)
           .snapshots();
-    }else{
+    } else {
       return Firestore.instance
           .collection('babies')
           .document(babyId)
           .collection('activities')
           .where('timeStart',
-          isLessThan: date.add(new Duration(days: 1)),
-          isGreaterThanOrEqualTo: date)
+              isLessThan: date.add(new Duration(days: 1)),
+              isGreaterThanOrEqualTo: date)
           .snapshots();
     }
   }

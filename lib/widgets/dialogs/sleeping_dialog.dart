@@ -1,12 +1,11 @@
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../../model/activity.dart';
 
 class SleepingDialog extends StatefulWidget {
-
   final DateTime _timeStart = new DateTime.now();
   final DateTime _timeEnd = new DateTime.now();
   final Sleeping sleeping;
@@ -17,8 +16,9 @@ class SleepingDialog extends StatefulWidget {
 
   @override
   _SleepingDialogState createState() {
-    if(sleeping != null){
-      return new _SleepingDialogState(sleeping.timeStart, sleeping.timeEnd, sleeping.note);
+    if (sleeping != null) {
+      return new _SleepingDialogState(
+          sleeping.timeStart, sleeping.timeEnd, sleeping.note);
     } else {
       return new _SleepingDialogState(this._timeStart, this._timeEnd, null);
     }
@@ -32,7 +32,6 @@ class _SleepingDialogState extends State<SleepingDialog> {
 
   TextEditingController _textController;
 
-
   _SleepingDialogState(this._timeStart, this._timeEnd, this._note);
 
   @override
@@ -40,9 +39,7 @@ class _SleepingDialogState extends State<SleepingDialog> {
     // TODO: implement initState
     super.initState();
     _textController = new TextEditingController(text: _note);
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -90,11 +87,12 @@ class _SleepingDialogState extends State<SleepingDialog> {
               ),
               new FlatButton(
                 onPressed: () {
-                  Navigator.of(context).pop(new Sleeping(
-                      _timeStart, _timeEnd, _note));
+                  Navigator
+                      .of(context)
+                      .pop(new Sleeping(_timeStart, _timeEnd, _note));
                 },
-                child:
-                new Text("OK", style: new TextStyle(color: Theme.of(context).accentColor)),
+                child: new Text("OK",
+                    style: new TextStyle(color: Theme.of(context).accentColor)),
               )
             ],
           ),
@@ -156,7 +154,7 @@ class DateTimeItem extends StatelessWidget {
 
   Future _showTimePicker(BuildContext context) async {
     TimeOfDay timeOfDay =
-    await showTimePicker(context: context, initialTime: time);
+        await showTimePicker(context: context, initialTime: time);
 
     if (timeOfDay != null) {
       onChanged(new DateTime(
